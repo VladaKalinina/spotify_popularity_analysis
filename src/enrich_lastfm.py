@@ -41,12 +41,13 @@ def extract_primary_artist(value: object) -> str | None:
     if not text:
         return None
 
-    try:
-        parsed = ast.literal_eval(text)
-        if isinstance(parsed, (list, tuple)) and parsed:
-            text = str(parsed[0])
-    except (ValueError, SyntaxError):
-        pass
+    if text.startswith(("[", "(")) and text.endswith(("]", ")")):
+        try:
+            parsed = ast.literal_eval(text)
+            if isinstance(parsed, (list, tuple)) and parsed:
+                text = str(parsed[0])
+        except (ValueError, SyntaxError):
+            pass
 
     artist = text.split(";")[0].strip().strip("[]'\"").strip()
     return artist or None
